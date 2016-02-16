@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.1.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+	<context:annotation-config />
+
+	<util:properties id="mProperties" location="/unit-test-msgs.properties" />
+	<context:component-scan base-package="com.oua.tm.common" />
+	<context:component-scan base-package="com.oua.tm.service" />
+	<context:component-scan base-package="com.oua.tm.persistence" />
+	<import resource="classpath*:template-service-config.xml" />
+
+	<import resource="classpath:oua-database-config.xml" />
+	
+	<bean id="createActivity" class="com.oua.tm.persistence.model.Activity" p:description="descTest" /> 
+ 	<bean id="activityService" class="com.oua.tm.service.impl.ActivityServiceImpl"></bean>
+ 	
+	<!--  <bean id="transactionManager"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ouaDataSource"/>
+    </bean>-->
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+	
+	<!--  bean id="ouaDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/TODO_MGR" />
+		<property name="username" value="root" />
+		<property name="password" value="System@123" />
+	</bean> -->
+
+	<bean id="logManager" class="java.util.logging.LogManager"
+		factory-method="getLogManager">
+	</bean>
+
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject">
+			<ref bean ="logManager" />
+		</property>
+		<property name="targetMethod">
+			<value>readConfiguration</value>
+		</property>
+		<property name="arguments">
+			<list>
+				<value type="java.io.InputStream">classpath:oua-logging.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+	
+	
+</beans>

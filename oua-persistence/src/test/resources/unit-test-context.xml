@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/lang 
+						http://www.springframework.org/schema/lang/spring-lang-4.0.xsd
+						http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util 
+						http://www.springframework.org/schema/util/spring-util-4.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+	<context:annotation-config />
+
+	<util:properties id="mProperties" location="/unit-test-msgs.properties" />
+	<context:component-scan base-package="com.oua.tm.common" />
+	<context:component-scan base-package="com.oua.tm.persistence"/>
+	<context:component-scan base-package="com.oua.tm.persistence.dao"/>
+	<import resource="classpath*:template-service-config.xml" />
+	
+	<bean id="createActivity" class="com.oua.tm.persistence.model.Activity" p:description="descTest" /> 
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url"
+            value="jdbc:mysql://localhost:3306/TODO_MGR" />
+        <property name="username" value="root" />
+        <property name="password" value="System@123" />
+    </bean>
+    
+    <!-- Hibernate 4 SessionFactory Bean definition -->
+    <bean id="hibernate4AnnotatedSessionFactory"
+        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="annotatedClasses">
+            <list>
+                <value>com.oua.tm.persistence.model.Activity</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
+                </prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    
+    <bean id="activityDAO" class="com.oua.tm.persistence.dao.impl.ActivityDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    
+	<bean id="logManager" class="java.util.logging.LogManager"
+		factory-method="getLogManager">
+	</bean>
+
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject">
+			<ref bean ="logManager" />
+		</property>
+		<property name="targetMethod">
+			<value>readConfiguration</value>
+		</property>
+		<property name="arguments">
+			<list>
+				<value type="java.io.InputStream">classpath:oua-logging.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+	
+	
+</beans>
