@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:lang="http://www.springframework.org/schema/lang"
 	xmlns:p="http://www.springframework.org/schema/p" 
@@ -16,74 +16,62 @@
 						http://www.springframework.org/schema/tx/spring-tx.xsd
 						http://www.springframework.org/schema/context 
 						http://www.springframework.org/schema/context/spring-context-4.0.xsd">
-
-
 	<context:annotation-config />
 
 	<util:properties id="mProperties" location="/unit-test-msgs.properties" />
 	<context:component-scan base-package="com.oua.tm.common" />
 	<context:component-scan base-package="com.oua.tm.persistence"/>
 	<context:component-scan base-package="com.oua.tm.persistence.dao"/>
-	<import resource="classpath*:template-service-config.xml" />
+	<beans:import resource="classpath*:template-service-config.xml" />
 	
-	<bean id="createActivity" class="com.oua.tm.persistence.model.Activity" p:description="descTest" /> 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-        destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url"
-            value="jdbc:mysql://localhost:3306/TODO_MGR" />
-        <property name="username" value="root" />
-        <property name="password" value="System@123" />
-    </bean>
-    
-    <!-- Hibernate 4 SessionFactory Bean definition -->
-    <bean id="hibernate4AnnotatedSessionFactory"
-        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
-        <property name="annotatedClasses">
-            <list>
-                <value>com.oua.tm.persistence.model.Activity</value>
-            </list>
-        </property>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
-                </prop>
-                <prop key="hibernate.show_sql">true</prop>
-            </props>
-        </property>
-    </bean>
+	<beans:bean id="createActivity" class="com.oua.tm.persistence.model.Activity" p:description="descTest" />
+	
+	 <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <beans:property name="url" value="jdbc:mysql://localhost:3306/TODO_MGR" />
+        <beans:property name="username" value="root" />
+        <beans:property name="password" value="System@123" />
+    </beans:bean>
     
     <tx:annotation-driven transaction-manager="transactionManager"/>
+        
+    <!-- Hibernate 4 SessionFactory Bean definition -->
+    <beans:bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <beans:property name="dataSource" ref="dataSource" />
+        <beans:property name="annotatedClasses">
+            <beans:list>
+                <beans:value>com.oua.tm.persistence.model.Activity</beans:value>
+            </beans:list>
+        </beans:property>
+        <beans:property name="hibernateProperties">
+            <beans:props>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</beans:prop>
+                <beans:prop key="hibernate.show_sql">true</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
     
-    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </bean>
+    <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <beans:property name="sessionFactory" ref="hibernateSessionFactory" />        
+    </beans:bean>
     
-    <bean id="activityDAO" class="com.oua.tm.persistence.dao.impl.ActivityDAOImpl">
-        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </bean>
+    <beans:bean id="activityDAO" class="com.oua.tm.persistence.dao.impl.ActivityDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernateSessionFactory" />
+    </beans:bean>
     
-	<bean id="logManager" class="java.util.logging.LogManager"
-		factory-method="getLogManager">
-	</bean>
+	<beans:bean id="logManager" class="java.util.logging.LogManager" factory-method="getLogManager"/>
 
-	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="targetObject">
-			<ref bean ="logManager" />
-		</property>
-		<property name="targetMethod">
-			<value>readConfiguration</value>
-		</property>
-		<property name="arguments">
-			<list>
-				<value type="java.io.InputStream">classpath:oua-logging.properties</value>
-			</list>
-		</property>
-	</bean>
-	
-	
-	
-	
-	
-</beans>
+	<beans:bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<beans:property name="targetObject">
+			<beans:ref bean ="logManager" />
+		</beans:property>
+		<beans:property name="targetMethod">
+			<beans:value>readConfiguration</beans:value>
+		</beans:property>
+		<beans:property name="arguments">
+			<beans:list>
+				<beans:value type="java.io.InputStream">classpath:oua-logging.properties</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>	
+</beans:beans>

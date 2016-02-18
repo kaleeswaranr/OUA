@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.oua.common.exception.OUAException;
@@ -38,13 +40,9 @@ public class ActivityServiceImpl extends BaseServiceImpl implements
 	 */
 	private static final Logger LOGGER = Logger.getLogger(LOGGING_CLASS_NAME);
 
-	//@Autowired
+	@Autowired
 	private ActivityDAO activityDAO;
-	
-    public void setActivityDAO(ActivityDAO mActivityDAO) {
-        this.activityDAO = mActivityDAO;
-    }
-    
+	    
 	/**
 	 * Returns a list of Activity {@link Activity) for the Search criteria represented by activity parameter.
 	 * Returns all if the parameter is null

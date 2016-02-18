@@ -68,7 +68,6 @@ public abstract class Base implements Serializable {
 	}
 	
 	/** @param id to sets id. */
-	@SuppressWarnings("unused")
 	public void setId(Long id) {
 		this.id = id;
 	}

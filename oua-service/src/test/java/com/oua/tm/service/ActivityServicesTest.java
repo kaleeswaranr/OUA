@@ -3,16 +3,10 @@
  */
 package com.oua.tm.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.oua.common.constants.Constants;
 import com.oua.tm.persistence.model.Activity;
 
 /**
@@ -45,43 +41,63 @@ public class ActivityServicesTest {
     * The @Autowired annotation is auto wire the HierarchyService.
     */
    @Autowired
-   private ActivityService mActivityService;
-   /**
-    * String literal to hold locale code for English.
-    */
-   private static final String LOCALE_EN_GB = "en_GB";
-
-   /**
-    * String literal to hold locale code for Reverse English.
-    */
-   private static final String LOCALE_EN_BG = "en_BG";
-
-   /**
-    * String literal to hold locale code for French.
-    */
-   private static final String LOCALE_EN_FR = "en_FR";
-
-   /**
-    * Logger Name for this class.
-    */
-   private static final String LOGGING_CLASS_NAME = ActivityServicesTest.class.getName();
-   /**
-    * Logger for this class.
-    */
-   private static final Logger LOGGER = Logger.getLogger(LOGGING_CLASS_NAME);
-
-	
-   private Activity mActivity;
-	
+   private ActivityService mActivityService;  
+   
    @Before
-	public void setUp() {
-	   mActivity = (Activity)mContext.getBean("createActivity");
-	}
+   public void setUp() {}
    
    
-   @Test
-	public void testToCreateProject() throws Exception {
-	    mActivity= mActivityService.save(mActivity);
-		assertTrue(mProperties.getProperty("service.activity.save"), mActivity.getId() == 1);
+	@Transactional
+	@Test(expected = RuntimeException.class)
+	public void createActivityWhenMoreThenLengthOfFields() throws Exception {
+		Activity mActivity = (Activity)mContext.getBean("createActivity");
+	    mActivity.setDescription("This is testing length of description, This is testing length of description"
+	    		+ "This is testing length of description, This is testing length of description,This is testing length of description"
+	    		+ "This is testing length of description, This is testing length of description This is testing length of description");
+	    Activity  mtActivity = mActivityService.save(mActivity);
+	    assertTrue(mProperties.getProperty("service.activity.save"), mtActivity.getId() > 1);
 	}
+  
+	@Transactional
+	@Test
+	public void createActivityWhenDescription() throws Exception{
+		Activity mActivity = new Activity();
+		mActivity.setDescription("This is testing length of description");
+		mActivity.setDelFlag(Constants.YES_FLG);
+		Activity mtActivity = mActivityService.save(mActivity);
+   		assertTrue(mProperties.getProperty("service.activity.save"), mtActivity.getId() > 1);	   
+	}
+  
+   	@Transactional
+   	@Test
+   	public void listById() throws Exception{
+	   Activity mActivity = new Activity();
+	   mActivity.setId(1l);
+	   mActivityService.list(mActivity);
+   	}
+  
+	@Transactional
+	@Test
+	public void listByDescription() throws Exception{
+		Activity mActivity = new Activity();
+		mActivity.setDescription("descTest");
+		mActivityService.list(mActivity);	   
+	}
+  
+  	@Transactional
+  	@Test(expected = RuntimeException.class)
+  	public void deleteWithoutId() throws Exception{	  
+  		Activity mActivity = new Activity();
+  		mActivityService.delete(mActivity);
+  	}
+  
+
+  	@Transactional
+	@Test(expected = RuntimeException.class)
+	public void deleteById() throws Exception{	   
+		Activity mActivity = new Activity();
+		mActivity.setId(1l);
+		mActivityService.delete(mActivity);
+	}
+  
 }
