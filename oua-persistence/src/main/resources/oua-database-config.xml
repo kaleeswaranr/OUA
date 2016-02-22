@@ -6,20 +6,27 @@
     xmlns:context="http://www.springframework.org/schema/context" 
     xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="http://www.springframework.org/schema/mvc 
-    http://www.springframework.org/schema/mvc/spring-mvc.xsd
-        http://www.springframework.org/schema/beans 
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context 
-        http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/tx 
-        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+						http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        				http://www.springframework.org/schema/beans 
+        				http://www.springframework.org/schema/beans/spring-beans.xsd
+        				http://www.springframework.org/schema/context 
+        				http://www.springframework.org/schema/context/spring-context.xsd
+        				http://www.springframework.org/schema/tx 
+        				http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
    
-    <beans:bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <!-- <beans:bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<beans:property name="jndiName" value="java:comp/env/jdbc/OUADataSource" />
 		<beans:property name="lookupOnStartup" value="true" />
 		<beans:property name="proxyInterface" value="javax.sql.DataSource" />
-	</beans:bean>
+	</beans:bean>-->
 	
+	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <beans:property name="driverClassName" value="${database.driver}" />
+        <beans:property name="url" value="${database.url}" />
+        <beans:property name="username" value="${database.user}" />
+        <beans:property name="password" value="${database.password}" />
+    </beans:bean> 
+    
     <!-- Hibernate 4 SessionFactory Bean definition -->
     <beans:bean id="hibernate4AnnotatedSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <beans:property name="dataSource" ref="dataSource" />

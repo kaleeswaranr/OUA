@@ -56,42 +56,83 @@
 		<dependency>
     		<groupId>org.aspectj</groupId>
     		<artifactId>aspectjweaver</artifactId>
-    		<version>1.7.4</version>
-		</dependency>
-		
+    		<version>${org.aspectj.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.6</version>
+			<version>${mysql.connector.java.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${org.springframework.springtest.version}</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+		</dependency>-->
+		
+		<dependency>
+		  <groupId>org.testng</groupId>
+		  <artifactId>testng</artifactId>
+		  <version>${testng.version}</version>
+		  <scope>test</scope>
 		</dependency>
 		<dependency>
 		<groupId>org.hibernate</groupId>
 		   <artifactId>hibernate-validator-cdi</artifactId>
-		   <version>5.2.3.Final</version>
+		   <version>${hibernate.validator.cdi.version}</version>
 		</dependency>
 		<dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
-            <version>2.2.4</version>
+            <version>${javax.el.api.version}</version>
       </dependency>
       <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.el</artifactId>
-            <version>2.2.4</version>
+            <version>${javax.el.version}</version>
       </dependency>
 	</dependencies>
 
 	<build>
+		<plugins>
+			<plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>sql-maven-plugin</artifactId>
+		        <version>1.5</version> 
+		        <dependencies>
+					<dependency>
+				        <groupId>mysql</groupId>
+				        <artifactId>mysql-connector-java</artifactId>
+				        <version>${mysql.connector.java.version}</version>
+					</dependency>
+		        </dependencies>
+				<configuration>
+					<driver>${db.driver}</driver>
+					<url>${db.url}</url>
+					<username>${db.username}</username>
+					<password>${db.password}</password>
+				</configuration> 
+ 				<executions>					 
+					<execution>
+						<id>create-table</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+  						</goals>
+						<configuration>
+	    					<autocommit>true</autocommit>
+	    					<srcFiles>
+	      						<srcFile>${sql.src.file}</srcFile>
+	    					</srcFiles>
+  						</configuration>
+					</execution> 					
+				</executions>
+			</plugin>
+		</plugins>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<resources>
 			<resource>
@@ -109,5 +150,6 @@
 				</includes>
 			</resource>
 		</resources>
+		
 	</build>
 </project>

@@ -16,19 +16,20 @@
 						http://www.springframework.org/schema/tx/spring-tx.xsd
 						http://www.springframework.org/schema/context 
 						http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+	<context:annotation-config />
 
-	
-	
-	<context:component-scan base-package="com.oua.tm.service" scoped-proxy="targetClass" />
-	
-	<util:properties id="mProperties" location="/unit-test-msgs.properties" />
-	<context:component-scan base-package="com.oua.tm.common" />
+	<util:properties id="mProperties" location="unit-test-msgs.properties" />
 	<context:component-scan base-package="com.oua.tm.service"/>
-	<beans:import resource="classpath*:template-service-config.xml" />
+	<context:component-scan base-package="com.oua.tm.persistence"/>
+	<context:component-scan base-package="com.oua.tm.persistence.dao"/>
 	
-	<beans:import resource="classpath:oua-database-config.xml" />
+	<!-- <beans:import resource="classpath:oua-database-config.xml" /> -->
+	<context:property-placeholder location="classpath:db.properties" />
+	<beans:import resource="classpath*:oua-database-config.xml" />
 	
-		
+	
+	<beans:bean id="createActivityFromService" class="com.oua.tm.persistence.model.Activity" p:description="Test From Service" />
+	
 	<beans:bean id="logManager" class="java.util.logging.LogManager" factory-method="getLogManager"/>
 
 	<beans:bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
@@ -43,5 +44,5 @@
 				<beans:value type="java.io.InputStream">classpath:oua-logging.properties</beans:value>
 			</beans:list>
 		</beans:property>
-	</beans:bean>		
+	</beans:bean>	
 </beans:beans>

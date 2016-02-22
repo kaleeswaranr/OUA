@@ -34,7 +34,7 @@ public interface ActivityDAO {
     * @return  value 1, if activity created successfully.
     * @throws OUAException in case of unknown errors.
     */
-	public Activity add(Activity pActivity) throws Exception;
+	public boolean add(Activity pActivity) throws Exception;
 	
 	
 	/**
@@ -45,5 +45,5 @@ public interface ActivityDAO {
     * @return  value 1, if activity delete successfully.
     * @throws OUAException in case of unknown errors.
     */
-	public int delete(Activity pActivity) throws Exception;
+	public boolean delete(Activity pActivity) throws Exception;
 }

@@ -36,7 +36,7 @@ public interface ActivityService extends BaseService{
 	* @return activity with Id, if activity created successfully
 	* @throws OUAException in case of unknown errors.
 	*/
-	public Activity save(Activity pActivity) throws Exception;
+	public boolean save(Activity pActivity) throws Exception;
 	
 	
 	/**
@@ -47,5 +47,5 @@ public interface ActivityService extends BaseService{
 	* @return activity with Id, if activity delete successfully
 	* @throws OUAException in case of unknown errors.
 	*/
-	public int delete(Activity pActivity) throws Exception;
+	public boolean delete(Activity pActivity) throws Exception;
 }
