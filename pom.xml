@@ -46,9 +46,9 @@
 		<mockito.version>1.10.19</mockito.version>
 		<testng.version>6.9.4</testng.version>
 		<db.driver>com.mysql.jdbc.Driver</db.driver>
-		<db.url>jdbc:mysql://localhost:3306/TODO_MGR</db.url>
+		<db.url>jdbc:mysql://127.0.0.1:3306/TODO_MGR</db.url>
 		<db.username>root</db.username>
-		<db.password>System@123</db.password>
+		<db.password></db.password>
 		<sql.src.file>../database/Activity.sql</sql.src.file>
 		
 	</properties>
