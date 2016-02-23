@@ -21,5 +21,9 @@ Please follow the step to change the configuration
 
 6. Execute the mvn clean package, once build success go to next step
 
-7. java -jar \target\dependency\webapp-runner.jar \oua-web\target\TODOManager.war 
+7. java -jar \target\dependency\webapp-runner.jar \oua-web\target\TODOManager.war
+
+8. Application Default URL - http://localhost:8080/ It will lanch the Default Page
+
+9. Click Activity Menu and You can the TODOManager Item, Add and Delete acivity you can do in this screen
 
