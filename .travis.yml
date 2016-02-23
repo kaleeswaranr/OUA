@@ -1,5 +1,5 @@
 language: java
 services:
   - mysql
-before_script:
+before_install:
   - mysql -e "create database IF NOT EXISTS TODO_MGR;" -uroot
