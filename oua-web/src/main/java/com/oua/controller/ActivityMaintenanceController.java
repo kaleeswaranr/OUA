@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.oua.common.constants.Constants;
-import com.oua.common.constants.JspPathMappingConstants;
-import com.oua.common.domain.ResponseJSON;
-import com.oua.common.exception.OUAException;
+import com.oua.tm.common.constants.Constants;
+import com.oua.tm.common.constants.JspPathMappingConstants;
+import com.oua.tm.common.domain.ResponseJSON;
+import com.oua.tm.common.exception.OUAException;
 import com.oua.tm.persistence.model.Activity;
 import com.oua.tm.service.ActivityService;
 
@@ -51,10 +51,7 @@ public class ActivityMaintenanceController {
    @Autowired
    private transient ReloadableResourceBundleMessageSource messageSource;
 
-   /**
-    * Service Facade Injection.
-    */
-  
+
    @Autowired
    private transient ActivityService mActivityService;
    /**
@@ -70,12 +67,13 @@ public class ActivityMaintenanceController {
 	* @param activity
 	* @return List of activity.
 	*/
+  
 	@RequestMapping("/user/activity/view")
 	public final ModelAndView view(){
 		LOGGER.entering(LOGGING_CLASS_NAME, " : view");
 		LOGGER.info("Request for view page");
 		final ModelAndView mModelAndView = new ModelAndView();
-		try{			
+		try{
 			mModelAndView.setViewName(mJspPathMappingConstants.ACTIVITY_VIEW);
 			LOGGER.exiting(LOGGING_CLASS_NAME, " : view");
 			return mModelAndView;
@@ -103,7 +101,6 @@ public class ActivityMaintenanceController {
 		final ResponseJSON mResponseJSON = new ResponseJSON();
 		List<Activity> mActivityList = null;
 		try{
-			// Assigning view name to display from the constant.
 			mActivityList = mActivityService.list(pActivity);
 			mResponseJSON.setMessage(messageSource.getMessage("general.list.success", null, Locale.getDefault()));
 			mResponseJSON.setResult(mActivityList);
@@ -156,7 +153,6 @@ public class ActivityMaintenanceController {
 			LOGGER.log(Level.SEVERE, "Unable to save activity", mOUAException);
 			LOGGER.logrb(Level.SEVERE, LOGGING_CLASS_NAME, "Add", "errorMessages", mOUAException.getMessage());
 			mResponseJSON.setStatus(Constants.FAILURE);
-			System.out.println("..................."+mOUAException.getKey()+"----------------------------");
 			mResponseJSON.setMessage(messageSource.getMessage(mOUAException.getKey(), null, Locale.getDefault()));			
 			return mResponseJSON;
 		}

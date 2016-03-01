@@ -16,13 +16,14 @@ import javax.validation.ValidatorFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.oua.common.constants.Constants;
-import com.oua.common.exception.OUAException;
+import com.oua.tm.common.constants.Constants;
+import com.oua.tm.common.exception.OUAException;
 import com.oua.tm.persistence.dao.ActivityDAO;
 import com.oua.tm.persistence.model.Activity;
 
@@ -47,43 +48,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		this.sessionFactory = mSessionFactory;
 	}
 	
-	/**
-	 * Returns a list of activity {@link Activity) for the search criteria represented by activity parameter.
-	 * Returns all if the parameter is null
-	 *
-	 * @param activity search criteria
-	 * @return List {@link Activity} 
-	 * @throws Exception 
-	 * @throws Exception when there is an unknown Error otherwise OUAException
-	 * 
-	 * @see com.oua.tm.persistence.dao.ActivityDAO#list activity)
-	 */
-	@SuppressWarnings("unchecked")
-	//@Override
-	public List<Activity> list(Activity pActivity) throws Exception {
-		LOGGER.entering(LOGGING_CLASS_NAME, " : list in persistence");
-		LOGGER.info("Request for list the activity from persistence");			
-		List<Activity> mActivityList = null;
-		try{
-			Session mSession = this.sessionFactory.getCurrentSession();
-			Criteria mCriteria = mSession.createCriteria(Activity.class);			
-			mCriteria.add(Restrictions.eq("delFlag", Constants.NO_FLG));			
-			mCriteria.add(Restrictions.isNotNull("description"));			
-			mActivityList = mCriteria.list();
-		}
-		catch(OUAException pOUAException){
-			LOGGER.log(Level.SEVERE, "There OUAException from "+ LOGGING_CLASS_NAME +" when saving activity", pOUAException);
-			throw pOUAException;
-		}
-		catch(Exception pException){
-			pException.printStackTrace(); 
-			LOGGER.log(Level.SEVERE, "There is unknown exception from "+ LOGGING_CLASS_NAME +" when add activity", pException);
-			throw pException;
-		}		
-		LOGGER.exiting(LOGGING_CLASS_NAME, " : list in persistence");
-		return mActivityList;
-	}
-
+	
 	/**
 	* Creates new Activity {@link Activity) with user submitted values.
 	* @param activity 
@@ -93,9 +58,10 @@ public class ActivityDAOImpl implements ActivityDAO {
 	* @see com.oua.tm.persistence.dao.ActivityDAO#add activity)
 	*/
 	//@Override
-	public Activity add(Activity pActivity) throws Exception{
+	public boolean add(Activity pActivity) throws Exception{
 		LOGGER.entering(LOGGING_CLASS_NAME, " : add");
 		LOGGER.info("Request for add the activity from persistence");
+		boolean mResult = false;
 		Session mSession= null;
 		Transaction mTransaction = null;
 		try{
@@ -107,7 +73,8 @@ public class ActivityDAOImpl implements ActivityDAO {
 				mTransaction = mSession.beginTransaction();			
 				pActivity.setDelFlag(Constants.NO_FLG);
 				mSession.persist(pActivity);			
-				mTransaction.commit();
+				mTransaction.commit();		
+				mResult = true;
 			}else{
 				throw new OUAException("fail.input.validation","", null);
 			}
@@ -134,10 +101,54 @@ public class ActivityDAOImpl implements ActivityDAO {
 			}	 
 	    }
 		LOGGER.exiting(LOGGING_CLASS_NAME, " : add");
-		return pActivity;
+		return mResult;
 	}
 	
-	
+	/**
+	 * Returns a list of activity {@link Activity) for the search criteria represented by activity parameter.
+	 * Returns all if the parameter is null
+	 *
+	 * @param activity search criteria
+	 * @return List {@link Activity} 
+	 * @throws Exception 
+	 * @throws Exception when there is an unknown Error otherwise OUAException
+	 * 
+	 * @see com.oua.tm.persistence.dao.ActivityDAO#list activity)
+	 */
+	//@Override
+	@SuppressWarnings("unchecked")
+	public List<Activity> list(Activity pActivity) throws Exception {
+		LOGGER.entering(LOGGING_CLASS_NAME, " : list in persistence");
+		LOGGER.info("Request for list the activity from persistence");			
+		List<Activity> mActivityList = null;
+		StatelessSession mSession = null;
+		try{
+			mSession = this.sessionFactory.openStatelessSession();
+			Criteria mCriteria = mSession.createCriteria(Activity.class);			
+			mCriteria.add(Restrictions.eq("delFlag", Constants.NO_FLG));
+			if(pActivity.getDescription() !=null && !pActivity.getDescription().isEmpty()){
+				mCriteria.add(Restrictions.eq("description", pActivity.getDescription()));
+			}			
+			mActivityList = mCriteria.list();
+		}
+		catch(OUAException pOUAException){
+			LOGGER.log(Level.SEVERE, "There OUAException from "+ LOGGING_CLASS_NAME +" when list activity", pOUAException);
+			throw pOUAException;
+		}
+		catch(Exception pException){
+			pException.printStackTrace(); 
+			LOGGER.log(Level.SEVERE, "There is unknown exception from "+ LOGGING_CLASS_NAME +" when list activity", pException);
+			throw pException;
+		}
+		finally{
+			if(mSession != null){
+				mSession.close();	
+			}
+		}
+		LOGGER.exiting(LOGGING_CLASS_NAME, " : list in persistence");
+		return mActivityList;
+	}
+
 	/**
 	* Deletes Activity {@link Activity) with user submitted values.
 	* @param activity 
@@ -146,19 +157,20 @@ public class ActivityDAOImpl implements ActivityDAO {
 	* @see com.oua.tm.persistence.dao.ActivityDAO#add activity)
 	*/
 	//@Override
-	public int delete(Activity pActivity) throws Exception{
+	public boolean delete(Activity pActivity) throws Exception{
 		LOGGER.entering(LOGGING_CLASS_NAME, " : delete in persistence");
 		LOGGER.info("Request for delete the activity from persistence");
-		int mResult = 0;
+		boolean mResult = false;
 		Session mSession= null;
 		Transaction mTransaction = null;
 		try{
 			mSession = this.sessionFactory.openSession();
 			mTransaction = mSession.beginTransaction();
-			Activity mActivity = (Activity)mSession.load(Activity.class, pActivity.getId());			
-			mActivity.setDelFlag(Constants.YES_FLG);
+			Activity mActivity = (Activity)mSession.load(Activity.class, pActivity.getId());
+			pActivity.setDelFlag(Constants.YES_FLG);
 			mSession.update(mActivity);
 			mTransaction.commit();
+			mResult = true;			
 		}
 		catch(OUAException pOUAException){
 			if (mTransaction!=null) {
@@ -172,7 +184,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				mTransaction.rollback();
 			}
 			pException.printStackTrace(); 
-			LOGGER.log(Level.SEVERE, "There is unknown exception from "+ LOGGING_CLASS_NAME +" when add activity", pException);
+			LOGGER.log(Level.SEVERE, "There is unknown exception from "+ LOGGING_CLASS_NAME +" when delete activity", pException);
 			throw pException;
 		}
 		finally{

@@ -2,7 +2,7 @@
  * Copyright (c) Open Universities Australia 2016
  */
 
-package com.oua.common.domain;
+package com.oua.tm.common.domain;
 
 /**
  * This class encapsulates JSON Response Object.

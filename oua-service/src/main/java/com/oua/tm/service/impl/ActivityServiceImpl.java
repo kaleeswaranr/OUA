@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.oua.common.exception.OUAException;
+import com.oua.tm.common.exception.OUAException;
 import com.oua.tm.persistence.dao.ActivityDAO;
 import com.oua.tm.persistence.model.Activity;
 import com.oua.tm.service.ActivityService;
@@ -83,11 +83,12 @@ public class ActivityServiceImpl extends BaseServiceImpl implements
     */
 	//@Override
     @Transactional
-	public Activity save(Activity pActivity)throws Exception{		
+	public boolean save(Activity pActivity)throws Exception{
+    	boolean mResult = false;
 		try {
 			LOGGER.entering(LOGGING_CLASS_NAME, " : save in service");
    			LOGGER.info("Request for save activity from service");
-   			this.activityDAO.add(pActivity);
+   			mResult = this.activityDAO.add(pActivity);
 		}
 		catch (OUAException mOUAException) {
 			LOGGER.log(Level.SEVERE, "There OUAException from "+ LOGGING_CLASS_NAME +" when saving activity", mOUAException);
@@ -97,7 +98,7 @@ public class ActivityServiceImpl extends BaseServiceImpl implements
 			LOGGER.log(Level.SEVERE, "There is unknown exception from "+ LOGGING_CLASS_NAME +" when saving activity", mException);
 			throw mException;
 		}
-		return pActivity;
+		return mResult;
 	}
     
     
@@ -109,8 +110,8 @@ public class ActivityServiceImpl extends BaseServiceImpl implements
      * @see com.oua.tm.service.ActivityService#list Activity)
      */
      @Transactional
- 	public int delete(Activity pActivity)throws Exception{
-    	int mResult = 0;
+ 	public boolean delete(Activity pActivity)throws Exception{
+    	boolean mResult = false;
  		try {
  			LOGGER.entering(LOGGING_CLASS_NAME, " : delete in service");
     		LOGGER.info("Request for delete activity from service");

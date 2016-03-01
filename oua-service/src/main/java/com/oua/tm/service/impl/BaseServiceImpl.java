@@ -4,8 +4,6 @@
 
 package com.oua.tm.service.impl;
 
-import java.util.logging.Logger;
-
 import com.oua.tm.service.BaseService;
 
 /**
@@ -15,13 +13,4 @@ import com.oua.tm.service.BaseService;
  */
 
 public class BaseServiceImpl implements BaseService {
-
-	private static final String LOGGING_CLASS_NAME = BaseServiceImpl.class
-			.getName();
-
-	/**
-	 * Logger for this class.
-	 */
-	private static final Logger LOGGER = Logger.getLogger(LOGGING_CLASS_NAME);
-
 }

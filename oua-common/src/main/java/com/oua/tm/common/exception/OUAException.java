@@ -2,7 +2,7 @@
  * Copyright (c) Open Universities Australia 2016
  */
 
-package com.oua.common.exception;
+package com.oua.tm.common.exception;
 
 /**
  * The OUAException is a common class extended by all the Exception classes of the application. 

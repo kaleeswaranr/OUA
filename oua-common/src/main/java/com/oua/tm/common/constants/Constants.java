@@ -1,7 +1,7 @@
 /* @(#)Constants.java 1.0 02/16
  * Copyright (c) Open Universities Australia 2016
  */
-package com.oua.common.constants;
+package com.oua.tm.common.constants;
 
 /**
  * This class represents the common constants to be used in this application.
