@@ -167,7 +167,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			mSession = this.sessionFactory.openSession();
 			mTransaction = mSession.beginTransaction();
 			Activity mActivity = (Activity)mSession.load(Activity.class, pActivity.getId());
-			pActivity.setDelFlag(Constants.YES_FLG);
+			mActivity.setDelFlag(Constants.YES_FLG);
 			mSession.update(mActivity);
 			mTransaction.commit();
 			mResult = true;			
