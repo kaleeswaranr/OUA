@@ -14,7 +14,7 @@ It's activity page, which is used to add TODO item by the user.
 	</head>
 	<script id="cActivityTmpl" type="text/html">
 		{{#result}}
-		 	<div class="radio list-group-item">
+		 	<div id="{{id}}_IH" class="radio list-group-item">
 				<label><input type="radio" name="{{id}}">{{description}}</label>
 			</div>
 		{{/result}}

@@ -40,7 +40,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 	 * Logger for this class.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(LOGGING_CLASS_NAME);
-
+	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -68,7 +68,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 			Validator validator = factory.getValidator();			
 			Set<ConstraintViolation<Activity>> mConstraintViolationList = validator.validate(pActivity);			
-			if(mConstraintViolationList.size() < 1){
+			if(mConstraintViolationList.size() < Constants.ATLEAST_ONE){
 				mSession = this.sessionFactory.openSession();
 				mTransaction = mSession.beginTransaction();			
 				pActivity.setDelFlag(Constants.NO_FLG);
@@ -83,7 +83,6 @@ public class ActivityDAOImpl implements ActivityDAO {
 			if (mTransaction!=null) {
 				mTransaction.rollback();
 			}
-			pOUAException.printStackTrace(); 
 			LOGGER.log(Level.SEVERE, "There OUAException from "+ LOGGING_CLASS_NAME +" when add activity", pOUAException);
 			throw pOUAException;
 		}
@@ -91,7 +90,6 @@ public class ActivityDAOImpl implements ActivityDAO {
 			if (mTransaction!=null) {
 				mTransaction.rollback();
 			}
-			pException.printStackTrace(); 
 			LOGGER.log(Level.SEVERE, "There is unknown exception from "+ LOGGING_CLASS_NAME +" when add activity", pException);
 			throw pException;
 		}		
@@ -126,9 +124,14 @@ public class ActivityDAOImpl implements ActivityDAO {
 			mSession = this.sessionFactory.openStatelessSession();
 			Criteria mCriteria = mSession.createCriteria(Activity.class);			
 			mCriteria.add(Restrictions.eq("delFlag", Constants.NO_FLG));
-			if(pActivity.getDescription() !=null && !pActivity.getDescription().isEmpty()){
-				mCriteria.add(Restrictions.eq("description", pActivity.getDescription()));
-			}			
+			if(pActivity!= null){
+				if(pActivity.getId() != null){
+					mCriteria.add(Restrictions.eq("id", pActivity.getId()));
+				}
+				if(pActivity.getDescription() !=null && !pActivity.getDescription().isEmpty()){
+					mCriteria.add(Restrictions.eq("description", pActivity.getDescription()));
+				}
+			}
 			mActivityList = mCriteria.list();
 		}
 		catch(OUAException pOUAException){
@@ -164,13 +167,18 @@ public class ActivityDAOImpl implements ActivityDAO {
 		Session mSession= null;
 		Transaction mTransaction = null;
 		try{
-			mSession = this.sessionFactory.openSession();
-			mTransaction = mSession.beginTransaction();
-			Activity mActivity = (Activity)mSession.load(Activity.class, pActivity.getId());
-			pActivity.setDelFlag(Constants.YES_FLG);
-			mSession.update(mActivity);
-			mTransaction.commit();
-			mResult = true;			
+			if(pActivity!= null && pActivity.getId() != null){
+				mSession = this.sessionFactory.openSession();
+				mTransaction = mSession.beginTransaction();
+				Activity mActivity = (Activity)mSession.load(Activity.class, pActivity.getId());
+				mActivity.setDelFlag(Constants.YES_FLG);
+				mSession.update(mActivity);
+				mTransaction.commit();
+				pActivity = (Activity)mSession.load(Activity.class, pActivity.getId());
+				if(pActivity.getDelFlag() == Constants.YES_FLG){
+					mResult = true;
+				}
+			}
 		}
 		catch(OUAException pOUAException){
 			if (mTransaction!=null) {
@@ -194,6 +202,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 	    }
 		LOGGER.exiting(LOGGING_CLASS_NAME, " : delete in persistence");
 		return mResult;
-	}
+	}	   
+
 }
 	

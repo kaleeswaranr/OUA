@@ -6,7 +6,7 @@ CREATE TABLE Activity(
 	id int(11) unsigned NOT NULL AUTO_INCREMENT,
 	description VARCHAR(100) NOT NULL,
 	status VARCHAR(30) NULL,
-	delFlag VARCHAR(30) NULL,
+	delFlag CHAR(1) NULL,
 	modifiedBy VARCHAR(30) NULL, 
 	modifiedDate TIMESTAMP NULL,
 	createdBy VARCHAR(30) NULL, 

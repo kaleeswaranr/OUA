@@ -3,8 +3,6 @@
  */
 package com.oua.tm.persistence.dao;
 
-
-
 import java.util.List;
 import java.util.Properties;
 
@@ -46,51 +44,129 @@ public class ActivityDAOUTest extends AbstractTestNGSpringContextTests {
 	@Autowired
    	private ActivityDAO activityDAO;
 	
+	/**
+	 * create record with right input and expecting success case,
+	 */
 	@Transactional
 	@Test
 	public void createActivityWithDescription() throws Exception{
 		Activity mActivity = new Activity();
-		mActivity.setDescription("This is testing description");
+		mActivity.setDescription("This is testing description from DAO UT");
 		mActivity.setDelFlag(Constants.YES_FLG);
 		activityDAO.add(mActivity);
-		Assert.assertNotEquals(mProperties.getProperty("dao.activity.save"), mActivity.getId() > 1);	   
+		boolean mResult = false;
+		if(mActivity.getId() >= Constants.ATLEAST_ONE){		
+			mResult = true;
+		}
+		Assert.assertTrue(mResult,mProperties.getProperty("dao.activity.save"));
 	}
 
+	/**
+	 * Try to create record with more then max length and it's expecting failure case,
+	 */
 	@Transactional
-	@Test(expectedExceptions  = RuntimeException.class)
+	@Test(expectedExceptions  = OUAException.class)
 	public void createActivityWhenMoreThenLengthOfFields() throws Exception {
-		Activity mActivity = new Activity();		
+		Activity mActivity = new Activity();
 	    mActivity.setDescription("This is testing length of description, This is testing length of description"
 	    		+ "This is testing length of description, This is testing length of description,This is testing length of description"
 	    		+ "This is testing length of description, This is testing length of description This is testing length of description");
 	    activityDAO.add(mActivity);
 	}
 	
+	/**
+	 * List by Id and it's expecting success case,
+	 */
 	@Transactional
 	@Test
 	public void listById() throws Exception{
 		Activity mActivity = new Activity();
-		mActivity.setDescription("This is testing description");
-		List<Activity> mActivityList = activityDAO.list(mActivity);
-		Assert.assertNotEquals(mProperties.getProperty("dao.activity.list"), mActivityList.size() > 0);
+		mActivity.setDescription("This is testing description from DAO UT List");
+		activityDAO.add(mActivity);
+		
+		Activity tActivity = new Activity();
+		tActivity.setId(mActivity.getId());
+		List<Activity> mActivityList = activityDAO.list(tActivity);		
+		boolean mResult = false;
+		if(mActivityList.size() == Constants.ATLEAST_ONE){		
+			mResult = true;
+		}
+		Assert.assertTrue(mResult,mProperties.getProperty("dao.activity.list"));
+	}	
+	
+	/**
+	 * List by wrong Id and it's expecting failure case,
+	 */
+	@Transactional
+	@Test
+	public void listByWorngId() throws Exception{
+		Activity mActivity = new Activity();
+		mActivity.setId(10000l);
+		List<Activity> mActivityList = activityDAO.list(mActivity);		
+		boolean mResult = false;
+		if(mActivityList.size() == Constants.ZERO){		
+			mResult = true;
+		}
+		Assert.assertTrue(mResult,mProperties.getProperty("dao.activity.list"));
 	}
 	
+	/**
+	 * List by description and it's expecting success case,
+	 */
+	@Transactional
+	@Test
+	public void listByDescription() throws Exception{
+		Activity mActivity = new Activity();
+		mActivity.setDescription("This is testing description from DAO UT List for Description Search");
+		activityDAO.add(mActivity);
+		
+		Activity tActivity = new Activity();
+		tActivity.setDescription("This is testing description from DAO UT List for Description Search");
+		List<Activity> mActivityList = activityDAO.list(tActivity);		
+		boolean mResult = false;
+		if(mActivityList.size() >= Constants.ATLEAST_ONE){		
+			mResult = true;
+		}
+		Assert.assertTrue(mResult,mProperties.getProperty("dao.activity.list"));
+	}
 	
+	/**
+	 * List by wrong description and it's expecting failure case,
+	 */
+	@Transactional
+	@Test
+	public void listByWorngDescription() throws Exception{
+		Activity mActivity = new Activity();
+		mActivity.setDescription("Wrong Description");
+		List<Activity> mActivityList = activityDAO.list(mActivity);		
+		boolean mResult = false;
+		if(mActivityList.size() == Constants.ZERO){		
+			mResult = true;
+		}
+		Assert.assertTrue(mResult,mProperties.getProperty("dao.activity.list"));
+	}
 	
+	/**
+	 * Delete with Id show it's expecting success case,
+	 */
 	@Transactional
 	@Test
 	public void deleteById() throws Exception{	   
 		Activity mActivity = new Activity();
-		mActivity.setId(1l);
+		mActivity.setDescription("This is testing description from DAO UT Delete");
+		activityDAO.add(mActivity);
 		boolean mReturn = activityDAO.delete(mActivity);
-	    Assert.assertNotEquals(mProperties.getProperty("activity.dao.delete"), mReturn == false);
+	    Assert.assertEquals(mReturn,true, mProperties.getProperty("dao.activity.delete"));
 	}
 	
+	/**
+	 * Delete without Id show it's expecting failure case,
+	 */
 	@Transactional
-	@Test(expectedExceptions = RuntimeException.class)
+	@Test
 	public void deleteWithoutId() throws Exception{	  
 		Activity mActivity = new Activity();
-		activityDAO.delete(mActivity);
-	}
-	   
+		boolean mReturn = activityDAO.delete(mActivity);
+	    Assert.assertEquals(mReturn,false, mProperties.getProperty("dao.activity.delete"));
+	}   
 }

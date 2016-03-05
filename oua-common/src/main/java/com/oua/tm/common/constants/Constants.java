@@ -18,7 +18,8 @@ public final class Constants {
 	public static final String FAILURE = "FAILURE";
 	public static final char YES_FLG = 'Y';
 	public static final char NO_FLG = 'N';
-
+	public static final int ATLEAST_ONE = 1;
+	public static final int ZERO = 0;
 	/** Private Constructor. */
 	private Constants(){}
 }
