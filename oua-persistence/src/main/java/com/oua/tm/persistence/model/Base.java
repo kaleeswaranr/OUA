@@ -142,4 +142,14 @@ public abstract class Base implements Serializable {
 			this.createdDate = new Date(pCreatedDate.getTime());
 		}
 	}
+	
+	public String toString(){
+		return  "Id = " + getId() +
+				", Status = "+ getStatus() +
+				", DelFlag = "+ getDelFlag() +
+				", ModifiedBy = "+ getModifiedBy() + 
+				", ModifiedDate = "+ getModifiedDate() +
+				", CreatedBy = "+ getCreatedBy() +
+				", CreatedDate =  "+ getCreatedDate(); 
+	};
 }

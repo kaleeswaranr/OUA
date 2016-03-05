@@ -24,8 +24,7 @@ $(document).ready(function () {
 					action: ACTION.USER_ACTIVITY_DELETE,
 					data: JSON.stringify(mDeleteActivity),
 					success: function (pResponse) {
-						var mHtml = Mustache.to_html(mActivityTemplate,pResponse);		
-						$('#cDivActivityList').html(mHtml);
+						$("#"+mId+'_IH').remove();
 					}
 				});
 				pSelf.hide();
@@ -56,7 +55,7 @@ $(document).ready(function () {
 			data: JSON.stringify(mActivity),
 			success: function (pResponse) {
 				var mHtml = Mustache.to_html(mActivityTemplate,pResponse);		
-				$('#cDivActivityList').html(mHtml);
+				$('#cDivActivityList').append(mHtml);
 				$("#cActivityModalDialog").modal('hide');
 			}
 		});

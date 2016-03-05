@@ -28,7 +28,7 @@
 	<beans:import resource="classpath*:oua-database-config.xml" />
 	
 	
-	<beans:bean id="createActivityFromService" class="com.oua.tm.persistence.model.Activity" p:description="Test From Service" />
+	<beans:bean id="createActivityFromService" class="com.oua.tm.persistence.model.Activity" p:description="Test From Service IT" />
 	
 	<beans:bean id="logManager" class="java.util.logging.LogManager" factory-method="getLogManager"/>
 

@@ -34,4 +34,9 @@ public class Activity extends Base implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public String toString(){
+		return "Description = " + getDescription() +", "+ super.toString();
+				
+	};
 }

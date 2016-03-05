@@ -23,7 +23,7 @@
 	<context:property-placeholder location="classpath*:db.properties" />
 	<beans:import resource="classpath*:oua-database-config.xml" />
 	
-	<beans:bean id="createActivityFromDAO" class="com.oua.tm.persistence.model.Activity" p:description="Test From DAO" />
+	<beans:bean id="createActivityFromDAO" class="com.oua.tm.persistence.model.Activity" p:description="Test From DAO IT" />
 	
 	<beans:bean id="logManager" class="java.util.logging.LogManager" factory-method="getLogManager"/>
 
@@ -36,7 +36,7 @@
 		</beans:property>
 		<beans:property name="arguments">
 			<beans:list>
-				<beans:value type="java.io.InputStream">classpath:oua-logging.properties</beans:value>
+				<beans:value type="java.io.InputStream">oua-logging.properties</beans:value>
 			</beans:list>
 		</beans:property>
 	</beans:bean>	

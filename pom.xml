@@ -59,6 +59,7 @@
 		<module>oua-service</module>
 		<module>oua-web</module>
 	</modules>
+	
 	<dependencies>		
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -77,28 +78,7 @@
 					<target>${jdk.version}</target>
 					<compilerArgument>-deprecation</compilerArgument>
 				</configuration>
-			</plugin>
-			<plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-dependency-plugin</artifactId>
-	            <version>${maven.dependency.plugin.version}</version>
-	            <executions>
-	                <execution>
-	                    <phase>package</phase>
-	                    <goals><goal>copy</goal></goals>
-	                    <configuration>
-	                        <artifactItems>
-	                            <artifactItem>
-	                                <groupId>com.github.jsimone</groupId>
-	                                <artifactId>webapp-runner</artifactId>
-	                                <version>${webapp.runner.version}</version>
-	                                <destFileName>webapp-runner.jar</destFileName>
-	                            </artifactItem>
-	                        </artifactItems>
-	                    </configuration>
-	                </execution>
-	            </executions>
-        	</plugin>        	
+			</plugin>			       	
 		</plugins>
 	</build>	
 </project>
